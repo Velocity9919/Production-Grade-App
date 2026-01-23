@@ -6,9 +6,9 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'kastrov/multibranch-flask-app'
-        GIT_USER   = 'kastrokiran'
-        GIT_EMAIL  = 'learnwithkastro@gmail.com'
+        IMAGE_NAME = 'nareshbabu1991/movie-app'
+        GIT_USER   = 'Velocity9919'
+        GIT_EMAIL  = 'ynareshbabu1992@gmail.com'
         IMAGE_TAG  = "build-${BUILD_NUMBER}"
     }
 
@@ -62,7 +62,7 @@ pipeline {
 
                         git add k8s/deployment.yml
                         git diff --cached --quiet || git commit -m "Updated image to ${IMAGE_TAG}"
-                        git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/KastroVKiran/Multi-Branch-Prod.git main
+                        git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/Velocity9919/Production-Grade-App.git main
                     '''
                 }
             }

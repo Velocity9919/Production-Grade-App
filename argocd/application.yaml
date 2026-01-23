@@ -7,7 +7,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/KastroVKiran/k8s-multi-app.git
+    repoURL: https://github.com/Velocity9919/Production-Grade-App.git
     targetRevision: main
     path: k8s
 
