@@ -22,10 +22,14 @@ pipeline {
             }
         }
 
-        stage('Docker Build & Push') {
-            when {
-                branch 'main'
+        stage('List Files') {
+            steps {
+                sh 'ls -R'
             }
+        }
+
+        stage('Docker Build & Push') {
+            when { branch 'main' }
 
             steps {
                 withCredentials([
@@ -38,7 +42,6 @@ pipeline {
                     sh '''
                         set -e
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-
                         docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                         docker push ${IMAGE_NAME}:${IMAGE_TAG}
                     '''
@@ -47,9 +50,7 @@ pipeline {
         }
 
         stage('Update Kubernetes Manifest') {
-            when {
-                branch 'main'
-            }
+            when { branch 'main' }
 
             steps {
                 withCredentials([
@@ -68,10 +69,11 @@ pipeline {
                         git checkout main
                         git pull origin main
 
-                        sed -i "s|image:.*|image: ${IMAGE_NAME}:${IMAGE_TAG}|" k8s/deployment.yml
+                        # CHANGE THIS PATH AFTER YOU SEE ls OUTPUT
+                        sed -i "s|image:.*|image: ${IMAGE_NAME}:${IMAGE_TAG}|" k8s/deploy.yml
 
-                        git add k8s/deployment.yml
-                        git commit -m "Update image to ${IMAGE_TAG}" || echo "No changes to commit"
+                        git add .
+                        git commit -m "Update image to ${IMAGE_TAG}" || echo "No changes"
 
                         git push https://${GIT_USERNAME}:${GIT_TOKEN}@${GIT_REPO} main
                     '''
@@ -82,7 +84,7 @@ pipeline {
 
     post {
         always {
-            docker logout || true
+            sh 'docker logout || true'
         }
     }
 }
