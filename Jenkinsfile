@@ -70,7 +70,7 @@ pipeline {
                         git pull origin main
 
                         # CHANGE THIS PATH AFTER YOU SEE ls OUTPUT
-                        sed -i "s|image:.*|image: ${IMAGE_NAME}:${IMAGE_TAG}|" k8s/deploy.yml
+                        sed -i "s|image:.*|image: ${IMAGE_NAME}:${IMAGE_TAG}|" k8s/deploy.yaml
 
                         git add .
                         git commit -m "Update image to ${IMAGE_TAG}" || echo "No changes"
