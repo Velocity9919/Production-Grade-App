@@ -6,10 +6,11 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'nareshbabu1991/movie-app'
+        IMAGE_NAME = "nareshbabu1991/movie-app"
         IMAGE_TAG  = "build-${BUILD_NUMBER}"
-        GIT_USER   = 'Velocity9919'
-        GIT_EMAIL  = 'ynareshbabu1992@gmail.com'
+        GIT_USER   = "Velocity9919"
+        GIT_TOKEN  = "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"
+        GIT_EMAIL  = "ynareshbabu1992@gmail.com"
     }
 
     stages {
