@@ -1,10 +1,26 @@
-from flask import Flask, render_template_string, request, jsonify, session
+try:
+    # If your editor shows "Import 'flask' could not be resolved", ensure Flask is installed:
+    # Install with: python -m pip install Flask
+    from flask import Flask, render_template_string, request, jsonify, session  # type: ignore[reportMissingImports]
+except ImportError as e:
+    raise ImportError(
+        "Flask is not installed. Install it with 'pip install Flask' or add it to requirements.txt"
+    ) from e
+
 import json
 import os
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Change this in production
+
+# Load secret key from environment in production; do NOT hard-code secret keys in source.
+# Prefer setting FLASK_SECRET_KEY (or SECRET_KEY) as an environment variable.
+secret_key = os.environ.get("FLASK_SECRET_KEY") or os.environ.get("SECRET_KEY")
+if secret_key:
+    app.secret_key = secret_key
+else:
+    # Fallback for development only: generate a random key each run (not suitable for production)
+    app.secret_key = os.urandom(24)
 
 # Sample products with free images from Picsum
 products = [
