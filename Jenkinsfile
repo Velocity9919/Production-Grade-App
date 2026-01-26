@@ -8,9 +8,10 @@ pipeline {
     environment {
         IMAGE_NAME = "nareshbabu1991/movie-app"
         IMAGE_TAG  = "build-${BUILD_NUMBER}"
-        GIT_USER   = "Velocity9919"
-        GIT_EMAIL  = "ynareshbabu1992@gmail.com"
-        GIT_REPO   = "github.com/Velocity9919/Production-Grade-App.git"
+
+        GIT_USER  = "Velocity9919"
+        GIT_EMAIL = "ynareshbabu1992@gmail.com"
+        GIT_REPO  = "github.com/Velocity9919/Production-Grade-App.git"
     }
 
     stages {
@@ -25,6 +26,7 @@ pipeline {
             when {
                 branch 'main'
             }
+
             steps {
                 withCredentials([
                     usernamePassword(
@@ -36,6 +38,7 @@ pipeline {
                     sh '''
                         set -e
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
                         docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                         docker push ${IMAGE_NAME}:${IMAGE_TAG}
                     '''
@@ -47,9 +50,14 @@ pipeline {
             when {
                 branch 'main'
             }
+
             steps {
                 withCredentials([
-                    string(credentialsId: 'github-creds', variable: 'GITHUB_TOKEN')
+                    usernamePassword(
+                        credentialsId: 'github-creds',
+                        usernameVariable: 'GIT_USERNAME',
+                        passwordVariable: 'GIT_TOKEN'
+                    )
                 ]) {
                     sh '''
                         set -e
@@ -65,7 +73,7 @@ pipeline {
                         git add k8s/deployment.yml
                         git commit -m "Update image to ${IMAGE_TAG}" || echo "No changes to commit"
 
-                        git push https://${GIT_USER}:${GITHUB_TOKEN}@${GIT_REPO} main
+                        git push https://${GIT_USERNAME}:${GIT_TOKEN}@${GIT_REPO} main
                     '''
                 }
             }
